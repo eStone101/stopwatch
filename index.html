@@ -15,7 +15,7 @@
   </style>
 </head>
 <body>
-  <p style="font-size: 40px;">Rekord Für Roulette-Bau</p>
+  <p style="font-size: 40px;" id="title"></p>
   <div class="time" id="display">00:00:00</div>
 
   <script src="/socket.io/socket.io.js"></script>
@@ -63,6 +63,10 @@
     socket.on("stopStopwatchFrontend", () => {
       running = false;
       clearInterval(timerInterval);
+    });
+
+    socket.on("newTimerTitle", (title) => {
+      document.getElementById('title').innerText = title;
     });
 
     socket.on("resetStopwatchFrontend", () => {

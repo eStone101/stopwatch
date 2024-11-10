@@ -11,18 +11,25 @@ const port = process.env.PORT || 9999;
 let startTime = null;
 let elapsedTime = 0;
 let running = false;
+let title = '';
 
 io.on("connection", (socket) => {
     console.log(socket.id + " connected");
 
     // Send current timer state (including startTime) on new connection
     socket.emit("updateTimer", { elapsedTime, running, startTime });
+    io.emit("newTimerTitle", title);
 
     // Event to handle start time being set
     socket.on("setStartTime", (time) => {
         startTime = Date.now() - time; // Set the custom start time
         elapsedTime = time;  // Adjust elapsed time to the custom start time
         io.emit("updateTimer", { elapsedTime, running, startTime });
+    });
+
+    socket.on("setTimerTitle", (timertitle) => {
+        title = timertitle;
+        io.emit("newTimerTitle", timertitle);
     });
 
     // Event to start the timer
