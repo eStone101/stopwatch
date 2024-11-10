@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Timer Display</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: "Bebas Neue", sans-serif; font-weight: 200; text-align: center; padding-top: 50px; }
+    .time { font-size: 50px; margin: 5px; text-shadow: 2px 2px 4px black; color:white;}
+    p { margin-bottom: -5px; text-shadow: 2px 2px 4px black; color:white;}
+  </style>
+</head>
+<body>
+  <p style="font-size: 40px;">Rekord Für Roulette-Bau</p>
+  <div class="time" id="display">00:00:00</div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    let running = false;
+    let elapsedTime = 0;
+    let timerInterval;
+    let startTime = 0;
+
+    // Format and display the time
+    function updateDisplay(time) {
+      const date = new Date(time);
+      const hours = String(date.getUTCHours()).padStart(2, '0');
+      const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+      const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+      document.getElementById('display').innerText = `${hours}:${minutes}:${seconds}`;
+    }
+
+    // Update the timer interval if running
+    function startUpdating() {
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        elapsedTime += 100; // Add 100 ms to elapsed time every 100 ms
+        updateDisplay(elapsedTime);
+      }, 100); // Update every 100 ms to reflect milliseconds
+    }
+
+    // Listen for timer updates
+    socket.on("updateTimer", (data) => {
+      elapsedTime = data.elapsedTime;
+      startTime = data.startTime; // Set startTime to the value from the server
+      running = data.running;
+      updateDisplay(elapsedTime);
+
+      if (running) startUpdating();
+      else clearInterval(timerInterval);
+    });
+
+    socket.on("startStopwatchFrontend", () => {
+      running = true;
+      startUpdating();
+    });
+
+    socket.on("stopStopwatchFrontend", () => {
+      running = false;
+      clearInterval(timerInterval);
+    });
+
+    socket.on("resetStopwatchFrontend", () => {
+      elapsedTime = 0;
+      running = false;
+      updateDisplay(0);
+      clearInterval(timerInterval);
+    });
+  </script>
+</body>
+</html>

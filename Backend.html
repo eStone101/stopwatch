@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Timer Control</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding-top: 50px; }
+    .time { font-size: 2em; margin: 20px; }
+    button { font-size: 1em; margin: 10px; padding: 10px 20px; }
+  </style>
+</head>
+<body>
+  <h1>Admin Timer Control</h1>
+  <label for="start-time">Start Time (in seconds):</label>
+  <input type="number" id="start-time" value="300" min="0" step="1" />
+  <button onclick="setStartTime()">Set Start Time</button>
+  <button onclick="startStopwatch()">Start</button>
+  <button onclick="stopStopwatch()">Stop</button>
+  <button onclick="resetStopwatch()">Reset</button>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    function setStartTime() {
+      const startTime = document.getElementById('start-time').value;
+      socket.emit("setStartTime", startTime * 1000); // Send the time in milliseconds
+    }
+
+    function startStopwatch() {
+      socket.emit("startStopwatch");
+    }
+
+    function stopStopwatch() {
+      socket.emit("stopStopwatch");
+    }
+
+    function resetStopwatch() {
+      socket.emit("resetStopwatch");
+    }
+  </script>
+</body>
+</html>
