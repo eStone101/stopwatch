@@ -1,51 +1,76 @@
 <!DOCTYPE html>
 <html lang="de">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Timer Control</title>
-  <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding-top: 50px; }
-    .time { font-size: 2em; margin: 20px; }
-    button { font-size: 1em; margin: 10px; padding: 10px 20px; }
-  </style>
-</head>
-<body>
-  <h1>Admin Timer Control</h1>
-  <label for="start-time">Start Time (in seconds):</label>
-  <input type="number" id="start-time" value="300" min="0" step="1" />
-  <label for="timer-title">Timer Title:</label>
-  <input  id="timer-title" value=""/>
-  <button onclick="setStartTime()">Set Start Time</button>
-  <button onclick="setTimerTitle()">Set Timer Title</button>
-  <button onclick="startStopwatch()">Start</button>
-  <button onclick="stopStopwatch()">Stop</button>
-  <button onclick="resetStopwatch()">Reset</button>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Admin Timer Control</title>
+		<style>
+			body { 
+				font-family: Arial, sans-serif;
+				text-align: center;
+				padding-top: 50px;
+				background-color: #1A1E24;
+			}
+			.time {
+				font-size: 2em;
+				margin: 20px;
+			}
+			button {
+				font-size: 1em;
+				margin: 10px;
+				padding: 10px 20px;
+				background-color: #4A90E2;
+				border-color: #FAF9F6;
+				color: #FAF9F6;
+			}
+			label {
+				color: #FAF9F6;
+			}
+			h1 {
+				color: #FAF9F6;
+			}
+			button:hover {
+				color: #FAF9F6;
+  				box-shadow: 2px 3px 10px #FAF9F6;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Admin Timer Control</h1>
+		<div>
+			<label for="start-time">Start Time (in seconds):</label>
+			<input type="number" id="start-time" value="300" min="0" step="1" />
+			<button onclick="setStartTime()">Set Start Time</button>
+		</div>
+		<div>
+			<label for="timer-title">Timer Title:</label>
+			<input  id="timer-title" value=""/>
+			<button onclick="setTimerTitle()">Set Timer Title</button>
+		</div>
+		<button onclick="startStopwatch()">Start</button>
+		<button onclick="stopStopwatch()">Stop</button>
+		<button onclick="resetStopwatch()">Reset</button>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
-    const socket = io();
-
-    function setStartTime() {
-      const startTime = document.getElementById('start-time').value;
-      socket.emit("setStartTime", startTime * 1000); // Send the time in milliseconds
-    }
-    function setTimerTitle() {
-      const timerTitle = document.getElementById('timer-title').value;
-      socket.emit("setTimerTitle", timerTitle);
-    }
-
-    function startStopwatch() {
-      socket.emit("startStopwatch");
-    }
-
-    function stopStopwatch() {
-      socket.emit("stopStopwatch");
-    }
-
-    function resetStopwatch() {
-      socket.emit("resetStopwatch");
-    }
-  </script>
-</body>
+		<script src="/socket.io/socket.io.js"></script>
+		<script>
+			const socket = io();
+			function setStartTime() {
+				const startTime = document.getElementById('start-time').value;
+				socket.emit("setStartTime", startTime * 1000);
+			}
+			function setTimerTitle() {
+				const timerTitle = document.getElementById('timer-title').value;
+				socket.emit("setTimerTitle", timerTitle);
+			}
+			function startStopwatch() {
+				socket.emit("startStopwatch");
+			}
+			function stopStopwatch() {
+				socket.emit("stopStopwatch");
+			}
+			function resetStopwatch() {
+				socket.emit("resetStopwatch");
+			}
+		</script>
+	</body>
 </html>

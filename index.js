@@ -16,14 +16,12 @@ let title = '';
 io.on("connection", (socket) => {
     console.log(socket.id + " connected");
 
-    // Send current timer state (including startTime) on new connection
     socket.emit("updateTimer", { elapsedTime, running, startTime });
     io.emit("newTimerTitle", title);
 
-    // Event to handle start time being set
     socket.on("setStartTime", (time) => {
-        startTime = Date.now() - time; // Set the custom start time
-        elapsedTime = time;  // Adjust elapsed time to the custom start time
+        startTime = Date.now() - time;
+        elapsedTime = time;
         io.emit("updateTimer", { elapsedTime, running, startTime });
     });
 
@@ -32,7 +30,6 @@ io.on("connection", (socket) => {
         io.emit("newTimerTitle", timertitle);
     });
 
-    // Event to start the timer
     socket.on("startStopwatch", () => {
         if (!running) {
             startTime = Date.now() - elapsedTime;
@@ -42,7 +39,6 @@ io.on("connection", (socket) => {
         }
     });
 
-    // Event to stop the timer
     socket.on("stopStopwatch", () => {
         if (running) {
             elapsedTime = Date.now() - startTime;
@@ -51,7 +47,6 @@ io.on("connection", (socket) => {
         }
     });
 
-    // Event to reset the timer
     socket.on("resetStopwatch", () => {
         startTime = null;
         elapsedTime = 0;
@@ -60,7 +55,6 @@ io.on("connection", (socket) => {
     });
 });
 
-// Continuously updates elapsed time if running
 function updateElapsedTime() {
     if (running) {
         setTimeout(() => {
@@ -76,11 +70,11 @@ app.get('/', (req, res) => {
 });
 
 app.get('/admin', (req, res) => {
-    res.sendFile(join(__dirname, 'Backend.html'));
-});
-
-app.get('/styles.css', (req, res) => {
-    res.sendFile(join(__dirname, 'styles.css'));
+    if(req.query.pw == "masonmedia") {
+        res.sendFile(join(__dirname, 'Backend.html'));
+    } else {
+        res.redirect('/');
+    }
 });
 
 server.listen(port, () => {
