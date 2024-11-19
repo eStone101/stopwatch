@@ -72,7 +72,7 @@
 				clearInterval(timerInterval);
 			});
 			socket.on("newTimerTitle", (title) => {
-				
+				document.getElementById('title').innerText = title;
 			});
 			socket.on("resetStopwatchFrontend", () => {
 				elapsedTime = 0;
